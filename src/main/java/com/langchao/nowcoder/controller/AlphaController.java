@@ -7,8 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -23,6 +25,50 @@ import java.util.*;
 @Controller
 @RequestMapping("/alpha")
 public class AlphaController {
+
+
+    // session 示例
+    @RequestMapping(path = "/session/set",method = RequestMethod.GET)
+    @ResponseBody
+    public String setSession(HttpSession session){
+        session.setAttribute("session1","value1");
+        session.setAttribute("id",1);
+        return "set session";
+    }
+
+
+    @RequestMapping(path = "/session/get",method = RequestMethod.GET)
+    @ResponseBody
+    public String getSession(HttpSession session){
+        System.out.println(session.getAttribute("session1"));
+        System.out.println(session.getAttribute("id"));
+        return "get session";
+    }
+
+
+    // cookie 示例
+    @RequestMapping(path = "/cookie/set",method = RequestMethod.GET)
+    @ResponseBody
+    public String setCookie(HttpServletResponse resp){
+        // 创建 cookie
+        Cookie cookie = new Cookie("name1","value1");
+        // 设置 cookie
+        cookie.setPath("/nowcoder/alpha");
+        cookie.setMaxAge(60 * 10);
+        // 发送 cookie
+        resp.addCookie(cookie);
+
+        return "set cookie";
+    }
+
+
+    @RequestMapping(path = "/cookie/get",method = RequestMethod.GET)
+    @ResponseBody
+    public String getCookie(@CookieValue("name1")String code){
+        System.out.println(code);
+        return "get cookie";
+    }
+
 
 
     // 相应异步请求

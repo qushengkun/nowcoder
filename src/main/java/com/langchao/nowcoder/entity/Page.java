@@ -8,7 +8,7 @@ package com.langchao.nowcoder.entity;
  * @version: v1.0
  */
 
-public class Page {
+public class Page{
 
     // 当前页码
     private int current = 1;
@@ -63,7 +63,7 @@ public class Page {
      * 该页的起始行数
      * @return
      */
-    public int getOff(){
+    public int getOffset(){
         return (current - 1) * limit;
     }
 
