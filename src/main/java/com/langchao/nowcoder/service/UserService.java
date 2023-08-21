@@ -1,6 +1,8 @@
 package com.langchao.nowcoder.service;
 
+import com.langchao.nowcoder.dao.LoginTicketMapper;
 import com.langchao.nowcoder.dao.UserMapper;
+import com.langchao.nowcoder.entity.LoginTicket;
 import com.langchao.nowcoder.entity.User;
 import com.langchao.nowcoder.utils.MailClient;
 import com.langchao.nowcoder.utils.NowcoderConstant;
@@ -30,6 +32,8 @@ public class UserService implements NowcoderConstant {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
     @Autowired
     private MailClient mailClient;
     @Autowired
@@ -121,5 +125,58 @@ public class UserService implements NowcoderConstant {
             return ACTIVATION_FAILED;
         }
     }
+
+
+    // 登录
+    public Map<String,Object> login(String username,String password,int expiredSeconds){
+
+        HashMap<String, Object> map = new HashMap<>();
+        if(StringUtils.isBlank(username)){
+            map.put("usernameMsg","用户名不能为空");
+            return map;
+        }
+        if(StringUtils.isBlank(password)){
+            map.put("passwordMsg","密码不能为空");
+            return map;
+        }
+        // 验证账号
+        User user = userMapper.selectByName(username);
+        if(user == null){
+            map.put("usernameMsg","用户账号不可用");
+            return map;
+        }
+        // 验证状态
+        if(user.getStatus() == 0){
+            map.put("usernameMsg","用户未激活");
+            return map;
+        }
+        // 验证密码
+        password = NowcoderUtil.md5(password+user.getSalt());
+        if(!user.getPassword().equals(password)){
+            map.put("passwordMsg","密码不正确");
+            return map;
+        }
+
+        // 用户名和密码没问题，生成密码凭证
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(user.getId());
+        loginTicket.setTicket(NowcoderUtil.generateUUID());
+        loginTicket.setStatus(1);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + expiredSeconds * 1000));
+        loginTicketMapper.insertLoginTicket(loginTicket);
+
+        map.put("ticket",loginTicket.getTicket());
+        return map;
+    }
+
+
+    public void logout(String ticket){
+        loginTicketMapper.updateLoginTicket(ticket,0);
+    }
+
+    public LoginTicket findLoginTicket(String ticket){
+        return loginTicketMapper.selectLoginTicket(ticket);
+    }
+
 
 }

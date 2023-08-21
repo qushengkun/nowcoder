@@ -1,8 +1,12 @@
 package com.langchao.nowcoder;
 
 import com.langchao.nowcoder.dao.DiscussPostMapper;
+import com.langchao.nowcoder.dao.LoginTicketMapper;
+import com.langchao.nowcoder.dao.MessageMapper;
 import com.langchao.nowcoder.dao.UserMapper;
 import com.langchao.nowcoder.entity.DiscussPost;
+import com.langchao.nowcoder.entity.LoginTicket;
+import com.langchao.nowcoder.entity.Message;
 import com.langchao.nowcoder.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,72 @@ public class MapperTests {
     private UserMapper userMapper;
     @Autowired
     private DiscussPostMapper discussPostMapper;
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
+
+    @Autowired
+    private MessageMapper messageMapper;
+
+    @Test
+    public void testMessageMapper(){
+
+        List<Message> messages = messageMapper.selectConversations(111, 0, 10);
+        for(Message message : messages){
+            System.out.println(message);
+        }
+        System.out.println("************");
+
+        int i = messageMapper.selectConversationCount(111);
+        System.out.println(i);
+        System.out.println("************");
+
+        List<Message> messages1 = messageMapper.selectLetters("111_112", 0, 10);
+        for(Message message : messages1){
+            System.out.println(message);
+        }
+        System.out.println("************");
+
+        int i1 = messageMapper.selectLetterCount("111_112");
+        System.out.println(i1);
+        System.out.println("************");
+
+        int i2 = messageMapper.selectLetterUnreadCount(131, "111_131");
+        System.out.println(i2);
+
+
+    }
+
+
+
+
+
+
+    @Test
+    public void testSelectLoginTicket(){
+        LoginTicket loginTicket = loginTicketMapper.selectLoginTicket("abc");
+        System.out.println(loginTicket);
+
+        loginTicketMapper.updateLoginTicket("abc",2);
+
+        loginTicket = loginTicketMapper.selectLoginTicket("abc");
+        System.out.println(loginTicket);
+
+    }
+
+
+
+    @Test
+    public void testInsertLoginTicket(){
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(101);
+        loginTicket.setTicket("abc");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000*60*10));
+        loginTicketMapper.insertLoginTicket(loginTicket);
+    }
+
+
 
     @Test
     public void testSelectPosts(){

@@ -1,6 +1,7 @@
 package com.langchao.nowcoder.controller;
 
 import com.langchao.nowcoder.service.AlphaService;
+import com.langchao.nowcoder.utils.NowcoderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,18 @@ import java.util.*;
 @Controller
 @RequestMapping("/alpha")
 public class AlphaController {
+
+    // AJAX 示例
+    @RequestMapping(path = "/ajax",method = RequestMethod.POST)
+    @ResponseBody
+    public String testAjax(String name,int age){
+        System.out.println(name);
+        System.out.println(age);
+        return NowcoderUtil.getJSONString(0,"ok");
+
+    }
+
+
 
 
     // session 示例

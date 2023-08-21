@@ -9,6 +9,8 @@ public class User {
     private String salt;
     private String email;
     private int type;
+
+    // 状态 1:已激活 其他:未激活
     private int status;
     private String activationCode;
     private String headerUrl;

@@ -1,3 +1,7 @@
+// 配置项目路径
+var CONTEXT_PATH = "/nowcoder";
+
+
 window.alert = function(message) {
 	if(!$(".alert-box").length) {
 		$("body").append(
