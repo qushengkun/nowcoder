@@ -73,6 +73,7 @@ public class MessageController {
         model.addAttribute("letterUnreadCount",letterUnreadCount);
 
         return "/site/letter";
+
     }
 
 }
